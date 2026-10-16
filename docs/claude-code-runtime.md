@@ -10,7 +10,7 @@ directory (default `~/.local/bin`).
 
 Telchar installs `omp` from upstream, supplies the `omp2` workspace function via
 its zsh configuration, and installs `omp3` from `https://github.com/marioc-de/omp3`.
-Its `scripts/omp3-source.env` pins the fork commit. Each revision is prepared in
+Its `scripts/omp3-source.sh` pins the fork commit. Each revision is prepared in
 its own checkout under `~/.local/share/omp3/releases`; the launcher switches only
 after preparation and version verification succeed. `TELCHAR_OMP3_CHECKOUT`
 selects an explicitly prepared developer checkout instead. The SDK uses the
