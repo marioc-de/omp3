@@ -1,0 +1,5 @@
+[
+	{ "id": "sonnet", "name": "Claude SDK · Sonnet (Pro/Max)", "reasoning": false, "input": ["text"], "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }, "contextWindow": 200000, "maxTokens": 32000 },
+	{ "id": "opus", "name": "Claude SDK · Opus (Pro/Max)", "reasoning": false, "input": ["text"], "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }, "contextWindow": 200000, "maxTokens": 32000 },
+	{ "id": "haiku", "name": "Claude SDK · Haiku (Pro/Max)", "reasoning": false, "input": ["text"], "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }, "contextWindow": 200000, "maxTokens": 32000 }
+]

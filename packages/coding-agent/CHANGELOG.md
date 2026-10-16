@@ -4,6 +4,9 @@
 
 ### Added
 
+- Added separately labeled Claude SDK subscription models for normal OMP roles and plan mode alongside the existing Anthropic connection.
+
+- Added experimental `omp claude` mode using the official Claude Agent SDK and Claude Code's own authentication, tools and sessions.
 - Added `lsp.requestTimeout` setting to configure wait durations for language server diagnostics and requests
 - Added `omp auth-gateway serve --clients=<file>`: per-client bearer tokens, each limited to listed models and broker OAuth accounts with no fallback to other accounts or API keys, re-read while serving ([#5098](https://github.com/can1357/oh-my-pi/issues/5098), [#15900](https://github.com/can1357/oh-my-pi/pull/15900) by [@alphastorm](https://github.com/alphastorm))
 

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+exec bun "$repo_dir/packages/coding-agent/dist/cli.js" --profile claude-sdk --extension "$repo_dir/packages/coding-agent/src/claude-code/provider-extension.ts" "$@"

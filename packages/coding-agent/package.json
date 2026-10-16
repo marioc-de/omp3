@@ -536,7 +536,9 @@
 		"bench:guard": "bun scripts/bench-guard.ts"
 	},
 	"dependencies": {
+		"@anthropic-ai/claude-agent-sdk": "0.3.301",
 		"@babel/parser": "catalog:",
+		"@modelcontextprotocol/sdk": "1.29.0",
 		"@oh-my-pi/omp-stats": "catalog:",
 		"@oh-my-pi/omptype": "catalog:",
 		"@oh-my-pi/pi-agent-core": "catalog:",
@@ -560,7 +562,8 @@
 		"@opentelemetry/sdk-trace-base": "catalog:",
 		"@opentelemetry/sdk-trace-node": "catalog:",
 		"axe-core": "4.13.0",
-		"puppeteer-core": "catalog:"
+		"puppeteer-core": "catalog:",
+		"zod": "^4"
 	},
 	"devDependencies": {
 		"@types/bun": "catalog:"

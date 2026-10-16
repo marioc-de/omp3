@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Install the custom checkout under its own command; never replace upstream omp.
+set -euo pipefail
+repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+bin_dir="${OMP3_BIN_DIR:-$HOME/.local/bin}"
+bun_bin="$(command -v bun)"
+if [[ ! -f "$repo_dir/packages/coding-agent/dist/cli.js" ]]; then
+  echo 'Build this checkout first: bun run gen:tool-views && bun run gen:bundle' >&2
+  exit 1
+fi
+mkdir -p "$bin_dir"
+launcher="$(mktemp "$bin_dir/.omp3.XXXXXX")"
+trap 'rm -f "$launcher"' EXIT
+{
+  printf '#!/usr/bin/env bash\nset -euo pipefail\n'
+  # shellcheck disable=SC2016 # Expanded by the installed launcher, not the installer.
+  printf 'if [[ "${1:-}" == "--version" && "$#" == 1 ]]; then\n  printf "omp3 (custom Claude SDK) "\nfi\n'
+  printf 'exec %q %q --extension %q "$@"\n' "$bun_bin" "$repo_dir/packages/coding-agent/dist/cli.js" "$repo_dir/packages/coding-agent/src/claude-code/provider-extension.ts"
+} > "$launcher"
+chmod 755 "$launcher"
+"$launcher" --version
+mv -f "$launcher" "$bin_dir/omp3"
+printf 'Installed %s (checkout: %s)\n' "$bin_dir/omp3" "$repo_dir"

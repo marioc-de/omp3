@@ -1,0 +1,7 @@
+modelRoles:
+  default: claude-code/sonnet
+  smol: claude-code/haiku
+  slow: claude-code/opus
+  plan: claude-code/opus
+  tiny: claude-code/haiku
+  task: claude-code/sonnet

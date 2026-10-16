@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Prepare a source checkout using matching upstream native release artifacts.
+set -euo pipefail
+repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_dir"
+command -v bun >/dev/null
+bun install --frozen-lockfile --ignore-scripts
+platform="$(bun -p 'process.platform + "-" + process.arch')"
+case "$platform" in
+  linux-x64|linux-arm64|darwin-x64|darwin-arm64) ;;
+  *) echo "Unsupported omp3 platform: $platform" >&2; exit 1 ;;
+esac
+version="$(bun -p 'require("./packages/natives/package.json").version')"
+archive_dir="$(mktemp -d)"
+trap 'rm -rf "$archive_dir"' EXIT
+curl --fail --location --retry 3 --output "$archive_dir/native.tgz" \
+  "https://registry.npmjs.org/@oh-my-pi/pi-natives-$platform/-/pi-natives-$platform-$version.tgz"
+tar -xzf "$archive_dir/native.tgz" -C "$archive_dir"
+# Only the native binaries are copied; JS/types come from the pinned checkout.
+found=0
+for addon in "$archive_dir"/package/pi_natives.*.node; do
+  [[ -f "$addon" ]] || continue
+  cp "$addon" packages/natives/native/
+  found=1
+done
+[[ "$found" == 1 ]] || { echo 'Native release contained no addon' >&2; exit 1; }
+bun run gen:tool-views
+bun run gen:bundle

@@ -542,9 +542,10 @@ export async function runCli(argv: string[]): Promise<void> {
 		resolvedArgv[0] === "--version" ||
 		resolvedArgv[0] === "-v" ||
 		resolvedArgv[0] === "help";
-	await Promise.all([setFullProcessName(), helpOrVersion ? Promise.resolve() : installNetworkBootstrap()]);
+	await setFullProcessName();
 
 	if (resolvedArgv[0] === "--smoke-test") {
+		await installNetworkBootstrap();
 		await runSmokeTest();
 		return;
 	}
@@ -563,6 +564,9 @@ export async function runCli(argv: string[]): Promise<void> {
 			return;
 		}
 		runningCommand = resolved.argv[0];
+		// Resolve leading global flags first: every route to Claude Code must
+		// skip OMP's provider proxy/bootstrap, not just `omp claude ...`.
+		if (!helpOrVersion && runningCommand !== "claude") await installNetworkBootstrap();
 		await run({ bin: APP_NAME, version: VERSION, argv: resolved.argv, commands, metadataHelp: showHelp });
 	} finally {
 		stopStartupComposer?.();

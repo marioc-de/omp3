@@ -1,5 +1,9 @@
 import type { CommandMetadata } from "@oh-my-pi/pi-utils/cli";
 
+export const claudeHelp = {
+	description: "Use the Claude Code agent through its official SDK in an isolated OMP interface",
+} satisfies CommandMetadata;
+
 export const acpHelp = {
 	description: "Run omp as an ACP (Agent Client Protocol) server over stdio",
 } satisfies CommandMetadata;
