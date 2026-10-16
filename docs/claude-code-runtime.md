@@ -27,6 +27,12 @@ subscription authentication.
 /home/dev/src/oh-my-pi-claude-code/scripts/omp-sdk
 ```
 
+Use `/login` → **Claude SDK (Pro/Max · Claude Code)** to validate the official
+Claude Code login. If it is not authenticated, the dialog asks you to run
+`claude auth login` in another terminal, then press Enter to validate. OMP stores
+only a non-secret connection marker, never subscription tokens. Removing that
+marker in `/logout` does not sign out the external Claude Code installation.
+
 Use `/model` to select `claude-code/sonnet`, `claude-code/opus` or
 `claude-code/haiku`. `/plan` is OMP's native plan mode; the provider does not
 activate Claude Code plan mode. Configure roles in

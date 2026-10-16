@@ -16,6 +16,8 @@
 
 import { afterAll, beforeAll, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { getOAuthProviders } from "@oh-my-pi/pi-ai/oauth";
 import { AuthStorage } from "@oh-my-pi/pi-ai";
 import { ModelRegistry } from "@oh-my-pi/pi-coding-agent/config/model-registry";
 import { getModelMatchPreferences, resolveCliModel } from "@oh-my-pi/pi-coding-agent/config/model-resolver";
@@ -83,6 +85,25 @@ test("loadCliExtensionProviders makes extension providers resolvable by selector
 		expect(after.error).toBeUndefined();
 		expect(after.model?.provider).toBe("bench-gw");
 		expect(after.model?.id).toBe("bench-model");
+	} finally {
+		authStorage.close();
+	}
+});
+
+test("Claude SDK extension advertises its login alongside the original Anthropic provider", async () => {
+	const authStorage = await AuthStorage.create(tmp.join("sdk-auth.db"));
+	try {
+		const settings = await Settings.init({ inMemory: true, cwd: tmp.path() });
+		const registry = new ModelRegistry(authStorage);
+		await loadCliExtensionProviders(registry, settings, tmp.path(), {
+			disableExtensionDiscovery: true,
+			additionalExtensionPaths: [path.resolve(import.meta.dir, "../src/claude-code/provider-extension.ts")],
+		});
+		const providers = getOAuthProviders();
+		expect(providers.find(provider => provider.id === "claude-code")?.name).toBe(
+			"Claude SDK (Pro/Max · Claude Code)",
+		);
+		expect(providers.some(provider => provider.id === "anthropic")).toBe(true);
 	} finally {
 		authStorage.close();
 	}

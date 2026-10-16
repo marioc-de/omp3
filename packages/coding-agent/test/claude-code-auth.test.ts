@@ -2,7 +2,7 @@ import { afterEach, expect, test } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { checkClaudeSubscription } from "../src/claude-code/auth";
+import { checkClaudeSubscription, loginClaudeSdk } from "../src/claude-code/auth";
 
 const directories: string[] = [];
 afterEach(async () => {
@@ -47,4 +47,51 @@ test("refuses API-key authentication instead of charging the API in subscription
 test("logged-out CLI fails before a model request", async () => {
 	const binary = await authCli({ loggedIn: false }, 1);
 	await expect(checkClaudeSubscription(binary)).rejects.toThrow("not logged in");
+});
+
+test("SDK connection validates CLI login and stores only a non-secret marker", async () => {
+	const binary = await authCli({
+		loggedIn: true,
+		authMethod: "claude.ai",
+		apiProvider: "firstParty",
+		subscriptionType: "pro",
+	});
+	const progress: string[] = [];
+	const marker = await loginClaudeSdk(
+		{
+			onAuth() {},
+			onPrompt: async () => {
+				throw new Error("already logged in");
+			},
+			onProgress: message => progress.push(message),
+		},
+		binary,
+	);
+	expect(marker).toBe("claude-code-subscription");
+	expect(progress.join(" ")).toContain("pro");
+});
+test("SDK login rechecks CLI after external login instead of trusting pasted input", async () => {
+	const binary = await authCli({ loggedIn: false }, 1);
+	let prompted = false;
+	await expect(
+		loginClaudeSdk(
+			{
+				onAuth() {},
+				onPrompt: async prompt => {
+					prompted = true;
+					expect(prompt.allowEmpty).toBe(true);
+					return "pretend-token";
+				},
+			},
+			binary,
+		),
+	).rejects.toThrow("not logged in");
+	expect(prompted).toBe(true);
+});
+test("cancelled SDK connection cannot save a marker", async () => {
+	const controller = new AbortController();
+	controller.abort();
+	await expect(
+		loginClaudeSdk({ signal: controller.signal, onAuth() {}, onPrompt: async () => "" }, "/does-not-exist"),
+	).rejects.toThrow();
 });

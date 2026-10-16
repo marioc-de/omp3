@@ -4,6 +4,8 @@
 
 ### Added
 
+- Added a separate Claude SDK (Pro/Max) connection in `/login`, validating the official Claude Code login without copying tokens.
+
 - Added separately labeled Claude SDK subscription models for normal OMP roles and plan mode alongside the existing Anthropic connection.
 
 - Added experimental `omp claude` mode using the official Claude Agent SDK and Claude Code's own authentication, tools and sessions.

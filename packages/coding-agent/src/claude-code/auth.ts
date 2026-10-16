@@ -1,4 +1,5 @@
 import { $ } from "bun";
+import type { OAuthLoginCallbacks } from "@oh-my-pi/pi-ai/oauth/types";
 
 export interface ClaudeSubscription {
 	authMethod: "claude.ai";
@@ -28,4 +29,31 @@ export async function checkClaudeSubscription(binaryPath: string): Promise<Claud
 		authMethod: "claude.ai",
 		subscriptionType: typeof value.subscriptionType === "string" ? value.subscriptionType : "unknown",
 	};
+}
+
+/** Link the official CLI login without importing or persisting subscription tokens. */
+export async function loginClaudeSdk(
+	callbacks: OAuthLoginCallbacks,
+	binaryPath = process.env.OMP_CLAUDE_BINARY || "claude",
+): Promise<string> {
+	callbacks.signal?.throwIfAborted();
+	let subscription: ClaudeSubscription;
+	try {
+		subscription = await checkClaudeSubscription(binaryPath);
+	} catch {
+		callbacks.signal?.throwIfAborted();
+		await callbacks.onPrompt({
+			message:
+				"Em outro terminal, execute `claude auth login` com sua assinatura Pro/Max. Depois volte aqui e pressione Enter para validar. O login pertence ao Claude Code; nenhuma chave ou token deve ser colado aqui.",
+			allowEmpty: true,
+		});
+		callbacks.signal?.throwIfAborted();
+		subscription = await checkClaudeSubscription(binaryPath);
+	}
+	callbacks.signal?.throwIfAborted();
+	callbacks.onProgress?.(
+		`Claude SDK: login do Claude Code validado (${subscription.subscriptionType}). Credenciais permanecem no Claude Code.`,
+	);
+	// Local connection marker only; model transport never forwards this as a credential.
+	return "claude-code-subscription";
 }
