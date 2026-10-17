@@ -95,3 +95,29 @@ test("cancelled SDK connection cannot save a marker", async () => {
 		loginClaudeSdk({ signal: controller.signal, onAuth() {}, onPrompt: async () => "" }, "/does-not-exist"),
 	).rejects.toThrow();
 });
+
+test("cancellation interrupts an authentication subprocess that never answers", async () => {
+	const binary = await authCli({});
+	await Bun.write(binary, "#!/usr/bin/env bun\nsetInterval(() => {}, 1000);\n");
+	const controller = new AbortController();
+	const timer = setTimeout(() => controller.abort(), 50);
+	try {
+		await expect(checkClaudeSubscription(binary, process.env, controller.signal)).rejects.toThrow();
+	} finally {
+		clearTimeout(timer);
+	}
+});
+
+test("cancellation stops reading stdout inherited by a wrapper child", async () => {
+	const binary = await authCli({});
+	await Bun.write(binary, "#!/bin/sh\nsleep 2 &\nwait\n");
+	const controller = new AbortController();
+	const started = performance.now();
+	const timer = setTimeout(() => controller.abort(), 50);
+	try {
+		await expect(checkClaudeSubscription(binary, process.env, controller.signal)).rejects.toThrow();
+		expect(performance.now() - started).toBeLessThan(1500);
+	} finally {
+		clearTimeout(timer);
+	}
+});

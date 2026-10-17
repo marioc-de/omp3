@@ -33,6 +33,42 @@ Claude Code login. If it is not authenticated, the dialog asks you to run
 only a non-secret connection marker, never subscription tokens. Removing that
 marker in `/logout` does not sign out the external Claude Code installation.
 
+`/claude-accounts` opens a menu for named Claude Code configuration directories.
+Use `add <name> <absolute-directory>` (or `~/directory`), `login <name>` for the
+official command to run in another terminal, `status <name>`, and `use <name>`.
+Selection is stored in the active OMP profile's `claude-accounts.json`, containing
+only names/paths. It is applied to both the CLI auth check and SDK subprocess
+environment for each new request. It affects other sessions sharing that OMP
+profile too; it does not change the parent process environment, roles or fallbacks.
+`default` inherits the launch environment. `remove <name>` removes an inactive
+registration, never the actual Claude directory or login.
+Named profiles reject authentication/routing environment overrides rather than
+silently use a bearer or endpoint belonging to another account.
+Account changes and Telchar setup applications share an interprocess lock; a
+concurrent change is refused and can be retried. CLI authentication checks time
+out after 20 seconds, and login cancellation interrupts the check.
+
+`/claude-accounts usage <name>` and `usage-all` consult quotas on demand through
+the official SDK's experimental usage control API, using a stream that never
+yields a model prompt. They show available usage windows and reset times, with
+an explicit unavailable result when the CLI cannot return them. No OAuth tokens
+are read or copied. The API is unstable and may stop working after SDK/CLI updates.
+Reset times include the server process's timezone. Percentages belong to distinct
+windows and must not be added together or converted into tokens, dollars or
+remaining messages. These are account quotas, not consumption attributed to OMP.
+Extra usage billing is not included in this summary.
+
+`/claude-sdk-check` checks the current environment, configured roles/fallbacks,
+legacy Anthropic authentication sources and official CLI login status. It prints
+variable names and findings, never credential values. Warnings also appear at
+startup and before prompts (deduplicated), and when a retry fallback leaves the
+SDK provider. These are advisory checks, not a provider lock or a billing guarantee.
+The original Anthropic provider remains available. If legacy OAuth credentials
+are still configured, OMP's background usage monitor can make direct Anthropic
+requests even while the active model uses the SDK. Other providers can also serve
+Claude models without this SDK. Diagnostics inspect host role settings; explicit
+subagent overrides and extensions can introduce additional routes at runtime.
+
 The provider is now `claude-code-sdk`, with explicit model IDs returned by
 Claude Code's `supportedModels()` (catalog snapshot from 2026-10-16). For example,
 `claude-code-sdk/claude-opus-5-5`, `claude-code-sdk/claude-opus-5`, and

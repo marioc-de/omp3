@@ -4,6 +4,10 @@
 
 ### Added
 
+- Added `/claude-accounts` for named CLI profiles, validated account selection and on-demand quota inspection through the official SDK, without copying credentials or generating model prompts.
+
+- Added `/claude-sdk-check` and advisory warnings for legacy Anthropic credentials, environment overrides, Claude roles outside the SDK and retries leaving the SDK provider, without displaying secrets.
+
 - Claude SDK models now use `claude-code-sdk/<versioned-model-id>`, exposing exact versions instead of moving Sonnet/Opus/Haiku aliases.
 
 - Added a separate Claude SDK (Pro/Max) connection in `/login`, validating the official Claude Code login without copying tokens.

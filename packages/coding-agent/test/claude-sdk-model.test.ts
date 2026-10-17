@@ -50,7 +50,7 @@ function assistant(content: unknown[]): SDKMessage {
 
 test("OMP plan instructions and tool set control SDK inference without Claude plan or native tools", async () => {
 	let sdk: Options | undefined;
-	const deps: ModelTransportDependencies = {
+	const deps: Partial<ModelTransportDependencies> = {
 		checkAuth: async () => {},
 		query(args) {
 			sdk = args.options;
@@ -83,7 +83,7 @@ test("OMP plan instructions and tool set control SDK inference without Claude pl
 test("the next request uses actual OMP tool results and edited context, not an SDK-owned session", async () => {
 	const prompts: string[] = [];
 	const options: Options[] = [];
-	const deps: ModelTransportDependencies = {
+	const deps: Partial<ModelTransportDependencies> = {
 		checkAuth: async () => {},
 		query(args) {
 			prompts.push(args.prompt);
@@ -117,6 +117,38 @@ test("the next request uses actual OMP tool results and edited context, not an S
 	expect(options[0].resume).toBeUndefined();
 	expect(output.content).toContainEqual({ type: "text", text: "The file contains 42" });
 	expect(output.usage.totalTokens).toBe(34);
+});
+
+test("selected account environment is identical for auth preflight and SDK inference", async () => {
+	let checked: Record<string, string | undefined> | undefined;
+	let queried: Record<string, string | undefined> | undefined;
+	const output = await streamClaudeSdk(
+		model,
+		context,
+		{},
+		{
+			environment: async () => ({
+				CLAUDE_CONFIG_DIR: "/tmp/selected-max",
+				OMP_CLAUDE_BINARY: "/tmp/official-claude",
+			}),
+			checkAuth: async (binary, env) => {
+				expect(binary).toBe("/tmp/official-claude");
+				checked = env;
+			},
+			query(args) {
+				queried = args.options.env;
+				return {
+					close() {},
+					async *[Symbol.asyncIterator]() {
+						yield result();
+					},
+				};
+			},
+		},
+	).result();
+	expect(output.stopReason).toBe("stop");
+	expect(queried).toBe(checked);
+	expect(queried?.CLAUDE_CONFIG_DIR).toBe("/tmp/selected-max");
 });
 
 test("MCP catalog advertises only OMP tools and acknowledges without running them", async () => {

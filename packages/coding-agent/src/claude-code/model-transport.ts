@@ -14,9 +14,14 @@ export interface ModelQuery extends AsyncIterable<SDKMessage> {
 }
 export interface ModelTransportDependencies {
 	query(args: { prompt: string; options: Options }): ModelQuery;
-	checkAuth(binaryPath: string): Promise<unknown>;
+	checkAuth(binaryPath: string, env?: Record<string, string | undefined>): Promise<unknown>;
+	environment(): Promise<Record<string, string | undefined>>;
 }
-const defaults: ModelTransportDependencies = { query, checkAuth: checkClaudeSubscription };
+const defaults: ModelTransportDependencies = {
+	query,
+	checkAuth: checkClaudeSubscription,
+	environment: async () => ({ ...process.env }),
+};
 
 /** The MCP server only acknowledges requests. It cannot execute OMP or native tools. */
 export function createOmpToolCatalog(tools: readonly Tool[]): McpServer {
@@ -40,8 +45,9 @@ export function streamClaudeSdk(
 	model: Model,
 	context: Context,
 	options: SimpleStreamOptions = {},
-	dependencies: ModelTransportDependencies = defaults,
+	dependencies: Partial<ModelTransportDependencies> = {},
 ): AssistantMessageEventStream {
+	const deps = { ...defaults, ...dependencies };
 	const stream = new AssistantMessageEventStream();
 	const output: AssistantMessage = {
 		role: "assistant",
@@ -65,8 +71,9 @@ export function streamClaudeSdk(
 		let server: McpServer | undefined;
 		try {
 			controller.signal.throwIfAborted();
-			const binary = process.env.OMP_CLAUDE_BINARY || "claude";
-			await dependencies.checkAuth(binary);
+			const env = await deps.environment();
+			const binary = env.OMP_CLAUDE_BINARY || "claude";
+			await deps.checkAuth(binary, env);
 			controller.signal.throwIfAborted();
 			const messages = context.messages.map(message => {
 				const content =
@@ -86,9 +93,10 @@ export function streamClaudeSdk(
 			const tools = context.tools ?? [];
 			const toolNames = new Map(tools.map(tool => [`mcp__omp__${tool.name}`, tool.name]));
 			server = createOmpToolCatalog(tools);
-			active = dependencies.query({
+			active = deps.query({
 				prompt: render(conversationTemplate, { conversation: JSON.stringify(messages) }),
 				options: {
+					env,
 					cwd: options.cwd ?? process.cwd(),
 					model: model.id,
 					pathToClaudeCodeExecutable: binary,
