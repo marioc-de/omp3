@@ -100,10 +100,16 @@ test("Claude SDK extension advertises its login alongside the original Anthropic
 			additionalExtensionPaths: [path.resolve(import.meta.dir, "../src/claude-code/provider-extension.ts")],
 		});
 		const providers = getOAuthProviders();
-		expect(providers.find(provider => provider.id === "claude-code")?.name).toBe(
+		expect(providers.find(provider => provider.id === "claude-code-sdk")?.name).toBe(
 			"Claude SDK (Pro/Max · Claude Code)",
 		);
 		expect(providers.some(provider => provider.id === "anthropic")).toBe(true);
+		const preferences = getModelMatchPreferences(settings);
+		for (const id of ["claude-opus-5-5", "claude-opus-5", "claude-opus-4-6"]) {
+			const resolved = resolveCliModel({ cliModel: `claude-code-sdk/${id}`, modelRegistry: registry, preferences });
+			expect(resolved.model?.id).toBe(id);
+			expect(resolved.model?.provider).toBe("claude-code-sdk");
+		}
 	} finally {
 		authStorage.close();
 	}

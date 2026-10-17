@@ -4,6 +4,8 @@
 
 ### Added
 
+- Claude SDK models now use `claude-code-sdk/<versioned-model-id>`, exposing exact versions instead of moving Sonnet/Opus/Haiku aliases.
+
 - Added a separate Claude SDK (Pro/Max) connection in `/login`, validating the official Claude Code login without copying tokens.
 
 - Added separately labeled Claude SDK subscription models for normal OMP roles and plan mode alongside the existing Anthropic connection.

@@ -1,5 +1,178 @@
 [
-	{ "id": "sonnet", "name": "Claude SDK · Sonnet (Pro/Max)", "reasoning": false, "input": ["text"], "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }, "contextWindow": 200000, "maxTokens": 32000 },
-	{ "id": "opus", "name": "Claude SDK · Opus (Pro/Max)", "reasoning": false, "input": ["text"], "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }, "contextWindow": 200000, "maxTokens": 32000 },
-	{ "id": "haiku", "name": "Claude SDK · Haiku (Pro/Max)", "reasoning": false, "input": ["text"], "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }, "contextWindow": 200000, "maxTokens": 32000 }
+	{
+		"id": "claude-opus-5-5",
+		"name": "Claude SDK \u00b7 Opus 5.5 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-opus-5",
+		"name": "Claude SDK \u00b7 Opus 5 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-opus-4-8",
+		"name": "Claude SDK \u00b7 Opus 4.8 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-opus-4-7",
+		"name": "Claude SDK \u00b7 Opus 4.7 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-opus-4-6",
+		"name": "Claude SDK \u00b7 Opus 4.6 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-sonnet-5-5",
+		"name": "Claude SDK \u00b7 Sonnet 5.5 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-sonnet-5",
+		"name": "Claude SDK \u00b7 Sonnet 5 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-sonnet-4-6",
+		"name": "Claude SDK \u00b7 Sonnet 4.6 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-haiku-4-5-20251001",
+		"name": "Claude SDK \u00b7 Haiku 4.5 (20251001) (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-fable-5-1",
+		"name": "Claude SDK \u00b7 Fable 5.1 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	},
+	{
+		"id": "claude-fable-5",
+		"name": "Claude SDK \u00b7 Fable 5 (Pro/Max)",
+		"reasoning": false,
+		"input": [
+			"text"
+		],
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0
+		},
+		"contextWindow": 200000,
+		"maxTokens": 32000
+	}
 ]

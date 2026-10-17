@@ -5,7 +5,7 @@ import models from "./provider-models.json";
 
 /** Registers a model transport, not a replacement agent or slash-command handler. */
 export default function claudeSdkProvider(pi: ExtensionAPI): void {
-	pi.registerProvider("claude-code", {
+	pi.registerProvider("claude-code-sdk", {
 		api: "omp-claude-agent-sdk",
 		baseUrl: "https://unused-sdk-transport.invalid",
 		// Registry sentinel only. Never forwarded to the SDK or used as a credential.

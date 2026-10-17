@@ -11,9 +11,9 @@ import {
 } from "../src/claude-code/model-transport";
 
 const model = buildModel({
-	id: "haiku",
+	id: "claude-haiku-4-5-20251001",
 	name: "SDK",
-	provider: "claude-code",
+	provider: "claude-code-sdk",
 	api: "omp-claude-agent-sdk",
 	baseUrl: "https://unused.invalid",
 	reasoning: false,
@@ -73,6 +73,7 @@ test("OMP plan instructions and tool set control SDK inference without Claude pl
 	expect(sdk?.settingSources).toEqual([]);
 	expect(sdk?.strictMcpConfig).toBe(true);
 	expect(sdk?.maxTurns).toBe(1);
+	expect(sdk?.model).toBe("claude-haiku-4-5-20251001");
 	expect(sdk?.persistSession).toBe(false);
 	const request = { signal: new AbortController().signal, toolUseID: "x", requestId: "permission-x" };
 	expect((await sdk?.canUseTool?.("Bash", { command: "touch should-not-exist" }, request))?.behavior).toBe("deny");

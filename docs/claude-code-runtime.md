@@ -33,19 +33,28 @@ Claude Code login. If it is not authenticated, the dialog asks you to run
 only a non-secret connection marker, never subscription tokens. Removing that
 marker in `/logout` does not sign out the external Claude Code installation.
 
-Use `/model` to select `claude-code/sonnet`, `claude-code/opus` or
-`claude-code/haiku`. `/plan` is OMP's native plan mode; the provider does not
+The provider is now `claude-code-sdk`, with explicit model IDs returned by
+Claude Code's `supportedModels()` (catalog snapshot from 2026-10-16). For example,
+`claude-code-sdk/claude-opus-5-5`, `claude-code-sdk/claude-opus-5`, and
+`claude-code-sdk/claude-opus-4-6` are different selections. The chosen ID is sent
+unchanged to the SDK. Availability still depends on the authenticated account.
+Existing `claude-code/sonnet`, `/opus` and `/haiku` role assignments must be
+reselected using a versioned ID; old saved conversations are not rewritten.
+The login shortcut is now `/login claude-code-sdk`.
+
+Use `/model` to select `claude-code-sdk/claude-sonnet-5-5`, `claude-code-sdk/claude-opus-5-5` or
+`claude-code-sdk/claude-haiku-4-5-20251001`. `/plan` is OMP's native plan mode; the provider does not
 activate Claude Code plan mode. Configure roles in
 `~/.omp/profiles/claude-sdk/agent/config.yml`; a complete example lives in
 `scripts/claude-sdk-config.example.yml`. The local profile uses Sonnet for
 `default`/`task`, Opus for `plan`/`slow`, and Haiku for `smol`/`tiny`.
 The model picker and active-model label identify these models as
-`Claude SDK · Sonnet (Pro/Max)` (or Opus/Haiku). The existing `anthropic`
+`Claude SDK · Sonnet 5.5 (Pro/Max)` (or Opus/Haiku). The existing `anthropic`
 provider and its login remain available alongside the SDK provider; there is no
-provider block or SDK-only model filter. Select `claude-code/...` for SDK transport
+provider block or SDK-only model filter. Select `claude-code-sdk/...` for SDK transport
 or an existing `anthropic/...` model for the original connection. Roles can mix
 providers. Project configuration can override profile settings, so retain the
-`claude-code/` prefix for roles intended to use the SDK.
+`claude-code-sdk/` prefix for roles intended to use the SDK.
 
 The `omp3` installer never replaces the upstream `omp` command. For a fresh checkout, install
 dependencies, prepare the matching native addon as described below, then run
@@ -66,8 +75,7 @@ This is an adapter over an agent SDK, not a native stateless completion endpoint
 conversation roles are serialized in the prompt, and process startup/full context
 replay add overhead. Text input and ordinary tool calls are supported; images,
 OMP reasoning-effort controls and exact output-token/temperature controls are
-not implemented. Catalog windows are conservative placeholders; aliases resolve
-through Claude Code. A zero catalog price is not a claim of unlimited usage;
+not implemented. Catalog windows are conservative placeholders; explicit model IDs are sent unchanged to Claude Code. A zero catalog price is not a claim of unlimited usage;
 subscription quotas still apply, and SDK-reported costs are estimates.
 
 Live Pro validation covered inference and an OMP `read` tool followed by a second
